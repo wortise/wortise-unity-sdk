@@ -82,5 +82,5 @@ repositories {
 	}
 }
 dependencies {
-	compile 'com.wortise:android-sdk:1.1.2'
+	compile 'com.wortise:android-sdk:1.1.3'
 }
