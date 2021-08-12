@@ -110,4 +110,13 @@ public class WortiseConsentManager : MonoBehaviour
         }
         #endif
     }
+
+    public static void SetIabString(string value)
+    {
+        #if UNITY_ANDROID
+        if (activity != null) {
+            consentManager.CallStatic("setIabString", activity, value);
+        }
+        #endif
+    }
 }
