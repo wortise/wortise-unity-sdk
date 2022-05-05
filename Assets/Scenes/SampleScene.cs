@@ -22,13 +22,7 @@ public class SampleScene : MonoBehaviour
 
         WortiseSdk.OnInitialized += () => Enqueue(OnSdkInitialized());
 
-        WortiseAdSettings.IsChildDirected = true;
-        WortiseAdSettings.MaxAdContentRating = WortiseAdContentRating.G;
-
         WortiseSdk.Initialize("1f838a77-7032-4436-bfe4-4a902ec70b7a");
-
-        Debug.Log("[WONSER] IZ CHILD DIRECTED  = " + WortiseAdSettings.IsChildDirected);
-        Debug.Log("[WONSER] MAZ CONTENT RATING = " + WortiseAdSettings.MaxAdContentRating);
 
         WortiseInterstitial.OnFailed += () => Enqueue(OnInterstitialFailed());
         WortiseInterstitial.OnLoaded += () => Enqueue(OnInterstitialLoaded());
