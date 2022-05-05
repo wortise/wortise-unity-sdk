@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.android.tools.build:gradle:3.5.4'
 **BUILD_SCRIPT_DEPS**}
 }
 
@@ -29,11 +29,6 @@ dependencies {
 **DEPS**}
 
 android {
-	aaptOptions {
-		noCompress = ['.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')
-		ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
-	}
-
     compileSdkVersion **APIVERSION**
     buildToolsVersion '**BUILDTOOLS**'
 
