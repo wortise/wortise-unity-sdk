@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WortiseAdSettings : MonoBehaviour
+public class WortiseAdSettings
 {
     #if UNITY_ANDROID
     public static AndroidJavaObject activity

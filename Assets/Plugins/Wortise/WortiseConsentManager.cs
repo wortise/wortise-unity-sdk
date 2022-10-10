@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WortiseConsentManager : MonoBehaviour
+public class WortiseConsentManager
 {
     #if UNITY_ANDROID
     private static AndroidJavaObject activity

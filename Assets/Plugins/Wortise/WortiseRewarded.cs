@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WortiseRewarded : MonoBehaviour
+public class WortiseRewarded
 {
     #if UNITY_ANDROID
     private static AndroidJavaObject activity
@@ -14,109 +14,97 @@ public class WortiseRewarded : MonoBehaviour
         }
     }
     
-    private static AndroidJavaObject rewardedAd;
+    private AndroidJavaObject rewardedAd;
     #endif
-    
-    private static string currentAdUnitId;
-        
-    public static bool IsAvailable
+            
+    public bool IsAvailable
     {
         get
         {
             #if UNITY_ANDROID
-            if (rewardedAd != null) {
-                return rewardedAd.Call<bool>("isAvailable");
-            }
-            #endif
-            
+            return rewardedAd.Call<bool>("isAvailable");
+            #else
             return false;
+            #endif
         }
     }
     
-    public static bool IsDestroyed
+    public bool IsDestroyed
     {
         get
         {
             #if UNITY_ANDROID
-            if (rewardedAd != null) {
-                return rewardedAd.Call<bool>("isDestroyed");
-            }
-            #endif
-            
+            return rewardedAd.Call<bool>("isDestroyed");
+            #else
             return false;
+            #endif
         }
     }
 
-    public static bool IsShowing
+    public bool IsShowing
     {
         get
         {
             #if UNITY_ANDROID
-            if (rewardedAd != null) {
-                return rewardedAd.Call<bool>("isShowing");
-            }
-            #endif
-            
+            return rewardedAd.Call<bool>("isShowing");
+            #else
             return false;
+            #endif
         }
     }
     
-    public static event Action OnClicked;
-    public static event Action<WortiseReward> OnCompleted;
-    public static event Action OnDismissed;
-    public static event Action OnFailed;
-    public static event Action OnLoaded;
-    public static event Action OnShown;
+    public event Action OnClicked;
+    public event Action<WortiseReward> OnCompleted;
+    public event Action OnDismissed;
+    public event Action OnFailed;
+    public event Action OnLoaded;
+    public event Action OnShown;
 
     
-    public static void Destroy()
+    public WortiseRewarded(string adUnitId)
     {
-        #if UNITY_ANDROID
-        if (rewardedAd != null) {
-            rewardedAd.Call("destroy");
-            rewardedAd = null;
-        }
-        #endif
+        rewardedAd = new AndroidJavaObject("com.wortise.ads.rewarded.RewardedAd", activity, adUnitId);
+        rewardedAd.Call("setListener", new RewardedAdListener(this));
     }
-    
-    public static void LoadAd(string adUnitId)
-    {
-        #if UNITY_ANDROID
-        bool canLoad = (currentAdUnitId != adUnitId) || (rewardedAd == null);
 
-        if (activity != null && canLoad) {
-            rewardedAd = new AndroidJavaObject("com.wortise.ads.rewarded.RewardedAd", activity, adUnitId);
-            
-            rewardedAd.Call("setListener", new RewardedAdListener());
-            rewardedAd.Call("loadAd");
-            
-            currentAdUnitId = adUnitId;
-        }
+    public void Destroy()
+    {
+        #if UNITY_ANDROID
+        rewardedAd.Call("destroy");
         #endif
     }
     
-    public static bool ShowAd()
+    public void LoadAd()
     {
         #if UNITY_ANDROID
-        if (rewardedAd != null) {
-            rewardedAd.Call<bool>("showAd");
-        }
+        rewardedAd.Call("loadAd");
         #endif
-        
+    }
+    
+    public bool ShowAd()
+    {
+        #if UNITY_ANDROID
+        return rewardedAd.Call<bool>("showAd");
+        #else
         return false;
+        #endif
     }
     
     
     #if UNITY_ANDROID
     class RewardedAdListener : AndroidJavaProxy
     {
-        public RewardedAdListener() : base("com.wortise.ads.rewarded.RewardedAd$Listener")
+        private WortiseRewarded rewardedAd;
+
+
+        public RewardedAdListener(WortiseRewarded rewardedAd) : base("com.wortise.ads.rewarded.RewardedAd$Listener")
         {
+            this.rewardedAd = rewardedAd;
         }
         
         public void onRewardedClicked(AndroidJavaObject ad)
         {
-            OnClicked();
+            rewardedAd.OnClicked();
         }
 
         public void onRewardedCompleted(AndroidJavaObject ad, AndroidJavaObject reward)
@@ -131,27 +119,27 @@ public class WortiseRewarded : MonoBehaviour
 
             WortiseReward r = new WortiseReward(success, label, amount);
 
-            OnCompleted(r);
+            rewardedAd.OnCompleted(r);
         }
 
         public void onRewardedDismissed(AndroidJavaObject ad)
         {
-            OnDismissed();
+            rewardedAd.OnDismissed();
         }
 
         public void onRewardedFailed(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            OnFailed();
+            rewardedAd.OnFailed();
         }
 
         public void onRewardedLoaded(AndroidJavaObject ad)
         {
-            OnLoaded();
+            rewardedAd.OnLoaded();
         }
 
         public void onRewardedShown(AndroidJavaObject ad)
         {
-            OnShown();
+            rewardedAd.OnShown();
         }
     }
     #endif

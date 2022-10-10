@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WortiseInterstitial : MonoBehaviour
+public class WortiseInterstitial
 {
     #if UNITY_ANDROID
     private static AndroidJavaObject activity
@@ -14,128 +14,116 @@ public class WortiseInterstitial : MonoBehaviour
         }
     }
     
-    private static AndroidJavaObject interstitialAd;
+    private AndroidJavaObject interstitialAd;
     #endif
-    
-    private static string currentAdUnitId;
-        
-    public static bool IsAvailable
+            
+    public bool IsAvailable
     {
         get
         {
             #if UNITY_ANDROID
-            if (interstitialAd != null) {
-                return interstitialAd.Call<bool>("isAvailable");
-            }
-            #endif
-            
+            return interstitialAd.Call<bool>("isAvailable");
+            #else
             return false;
+            #endif
         }
     }
     
-    public static bool IsDestroyed
+    public bool IsDestroyed
     {
         get
         {
             #if UNITY_ANDROID
-            if (interstitialAd != null) {
-                return interstitialAd.Call<bool>("isDestroyed");
-            }
-            #endif
-            
+            return interstitialAd.Call<bool>("isDestroyed");
+            #else
             return false;
+            #endif
         }
     }
 
-    public static bool IsShowing
+    public bool IsShowing
     {
         get
         {
             #if UNITY_ANDROID
-            if (interstitialAd != null) {
-                return interstitialAd.Call<bool>("isShowing");
-            }
-            #endif
-            
+            return interstitialAd.Call<bool>("isShowing");
+            #else
             return false;
+            #endif
         }
     }
     
-    public static event Action OnClicked;
-    public static event Action OnDismissed;
-    public static event Action OnFailed;
-    public static event Action OnLoaded;
-    public static event Action OnShown;
+    public event Action OnClicked;
+    public event Action OnDismissed;
+    public event Action OnFailed;
+    public event Action OnLoaded;
+    public event Action OnShown;
 
     
-    public static void Destroy()
+    public WortiseInterstitial(string adUnitId)
     {
-        #if UNITY_ANDROID
-        if (interstitialAd != null) {
-            interstitialAd.Call("destroy");
-            interstitialAd = null;
-        }
-        #endif
+        interstitialAd = new AndroidJavaObject("com.wortise.ads.interstitial.InterstitialAd", activity, adUnitId);
+        interstitialAd.Call("setListener", new InterstitialAdListener(this));
     }
-    
-    public static void LoadAd(string adUnitId)
-    {
-        #if UNITY_ANDROID
-        bool canLoad = (currentAdUnitId != adUnitId) || (interstitialAd == null);
 
-        if (activity != null && canLoad) {
-            interstitialAd = new AndroidJavaObject("com.wortise.ads.interstitial.InterstitialAd", activity, adUnitId);
-            
-            interstitialAd.Call("setListener", new InterstitialAdListener());
-            interstitialAd.Call("loadAd");
-            
-            currentAdUnitId = adUnitId;
-        }
+    public void Destroy()
+    {
+        #if UNITY_ANDROID
+        interstitialAd.Call("destroy");
+        #endif
+    }
+
+    public void LoadAd()
+    {
+        #if UNITY_ANDROID
+        interstitialAd.Call("loadAd");
         #endif
     }
     
-    public static bool ShowAd()
+    public bool ShowAd()
     {
         #if UNITY_ANDROID
-        if (interstitialAd != null) {
-            interstitialAd.Call<bool>("showAd");
-        }
-        #endif
-        
+        return interstitialAd.Call<bool>("showAd");
+        #else
         return false;
+        #endif
     }
     
     
     #if UNITY_ANDROID
-    class InterstitialAdListener : AndroidJavaProxy
+    private class InterstitialAdListener : AndroidJavaProxy
     {
-        public InterstitialAdListener() : base("com.wortise.ads.interstitial.InterstitialAd$Listener")
+        private WortiseInterstitial interstitialAd;
+
+
+        public InterstitialAdListener(WortiseInterstitial interstitialAd) : base("com.wortise.ads.interstitial.InterstitialAd$Listener")
         {
+            this.interstitialAd = interstitialAd;
         }
         
         public void onInterstitialClicked(AndroidJavaObject ad)
         {
-            OnClicked();
+            interstitialAd.OnClicked();
         }
 
         public void onInterstitialDismissed(AndroidJavaObject ad)
         {
-            OnDismissed();
+            interstitialAd.OnDismissed();
         }
 
         public void onInterstitialFailed(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            OnFailed();
+            interstitialAd.OnFailed();
         }
 
         public void onInterstitialLoaded(AndroidJavaObject ad)
         {
-            OnLoaded();
+            interstitialAd.OnLoaded();
         }
 
         public void onInterstitialShown(AndroidJavaObject ad)
         {
-            OnShown();
+            interstitialAd.OnShown();
         }
     }
     #endif

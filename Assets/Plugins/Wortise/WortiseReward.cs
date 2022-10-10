@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class WortiseReward : MonoBehaviour
+public class WortiseReward
 {
     public int    amount;
     public string label;

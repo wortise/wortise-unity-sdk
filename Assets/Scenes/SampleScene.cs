@@ -8,6 +8,9 @@ public class SampleScene : MonoBehaviour
 {
     private Queue<Action> executionQueue = new Queue<Action>();
     
+    private WortiseInterstitial interstitialAd;
+    private WortiseRewarded     rewardedAd;
+
     private Button buttonShowInterstitial;
     private Button buttonShowRewarded;
     private Text   textStatus;
@@ -24,12 +27,16 @@ public class SampleScene : MonoBehaviour
 
         WortiseSdk.Initialize("1f838a77-7032-4436-bfe4-4a902ec70b7a");
 
-        WortiseInterstitial.OnFailed += () => Enqueue(OnInterstitialFailed());
-        WortiseInterstitial.OnLoaded += () => Enqueue(OnInterstitialLoaded());
+        interstitialAd = new WortiseInterstitial("test-interstitial");
 
-        WortiseRewarded.OnCompleted += (reward) => Enqueue(OnRewardedCompleted(reward));
-        WortiseRewarded.OnFailed    += () => Enqueue(OnRewardedFailed());
-        WortiseRewarded.OnLoaded    += () => Enqueue(OnRewardedLoaded());
+        interstitialAd.OnFailed += () => Enqueue(OnInterstitialFailed());
+        interstitialAd.OnLoaded += () => Enqueue(OnInterstitialLoaded());
+
+        rewardedAd = new WortiseRewarded("test-rewarded");
+
+        rewardedAd.OnCompleted += (reward) => Enqueue(OnRewardedCompleted(reward));
+        rewardedAd.OnFailed    += () => Enqueue(OnRewardedFailed());
+        rewardedAd.OnLoaded    += () => Enqueue(OnRewardedLoaded());
     }
 
     void Update()
@@ -122,17 +129,13 @@ public class SampleScene : MonoBehaviour
     }
     
     public void LoadInterstitial()
-    {
-        string adUnitId = "test-interstitial";
-        
-        WortiseInterstitial.LoadAd(adUnitId);
+    {        
+        interstitialAd.LoadAd();
     }
 
     public void LoadRewarded()
-    {
-        string adUnitId = "test-rewarded";
-        
-        WortiseRewarded.LoadAd(adUnitId);
+    {        
+        rewardedAd.LoadAd();
     }
 
     public void ShowConsentDialog()
@@ -142,11 +145,11 @@ public class SampleScene : MonoBehaviour
     
     public void ShowInterstitial()
     {
-        WortiseInterstitial.ShowAd();
+        interstitialAd.ShowAd();
     }
 
     public void ShowRewarded()
     {
-        WortiseRewarded.ShowAd();
+        rewardedAd.ShowAd();
     }
 }
