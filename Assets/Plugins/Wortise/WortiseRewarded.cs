@@ -47,27 +47,13 @@ public class WortiseRewarded : MonoBehaviour
         }
     }
 
-    public static bool IsLoaded
+    public static bool IsShowing
     {
         get
         {
             #if UNITY_ANDROID
             if (rewardedAd != null) {
-                return rewardedAd.Call<bool>("isLoaded");
-            }
-            #endif
-            
-            return false;
-        }
-    }
-
-    public static bool IsLoading
-    {
-        get
-        {
-            #if UNITY_ANDROID
-            if (rewardedAd != null) {
-                return rewardedAd.Call<bool>("isLoading");
+                return rewardedAd.Call<bool>("isShowing");
             }
             #endif
             

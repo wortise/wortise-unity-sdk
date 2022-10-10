@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WortiseInterstitial : MonoBehaviour
+public class WortiseAppOpen : MonoBehaviour
 {
     #if UNITY_ANDROID
     private static AndroidJavaObject activity
@@ -14,7 +14,7 @@ public class WortiseInterstitial : MonoBehaviour
         }
     }
     
-    private static AndroidJavaObject interstitialAd;
+    private static AndroidJavaObject appOpenAd;
     #endif
     
     private static string currentAdUnitId;
@@ -24,8 +24,8 @@ public class WortiseInterstitial : MonoBehaviour
         get
         {
             #if UNITY_ANDROID
-            if (interstitialAd != null) {
-                return interstitialAd.Call<bool>("isAvailable");
+            if (appOpenAd != null) {
+                return appOpenAd.Call<bool>("isAvailable");
             }
             #endif
             
@@ -38,8 +38,8 @@ public class WortiseInterstitial : MonoBehaviour
         get
         {
             #if UNITY_ANDROID
-            if (interstitialAd != null) {
-                return interstitialAd.Call<bool>("isDestroyed");
+            if (appOpenAd != null) {
+                return appOpenAd.Call<bool>("isDestroyed");
             }
             #endif
             
@@ -52,15 +52,15 @@ public class WortiseInterstitial : MonoBehaviour
         get
         {
             #if UNITY_ANDROID
-            if (interstitialAd != null) {
-                return interstitialAd.Call<bool>("isShowing");
+            if (appOpenAd != null) {
+                return appOpenAd.Call<bool>("isShowing");
             }
             #endif
             
             return false;
         }
     }
-    
+
     public static event Action OnClicked;
     public static event Action OnDismissed;
     public static event Action OnFailed;
@@ -71,9 +71,9 @@ public class WortiseInterstitial : MonoBehaviour
     public static void Destroy()
     {
         #if UNITY_ANDROID
-        if (interstitialAd != null) {
-            interstitialAd.Call("destroy");
-            interstitialAd = null;
+        if (appOpenAd != null) {
+            appOpenAd.Call("destroy");
+            appOpenAd = null;
         }
         #endif
     }
@@ -81,13 +81,13 @@ public class WortiseInterstitial : MonoBehaviour
     public static void LoadAd(string adUnitId)
     {
         #if UNITY_ANDROID
-        bool canLoad = (currentAdUnitId != adUnitId) || (interstitialAd == null);
+        bool canLoad = (currentAdUnitId != adUnitId) || (appOpenAd == null);
 
         if (activity != null && canLoad) {
-            interstitialAd = new AndroidJavaObject("com.wortise.ads.interstitial.InterstitialAd", activity, adUnitId);
+            appOpenAd = new AndroidJavaObject("com.wortise.ads.appopen.AppOpenAd", activity, adUnitId);
             
-            interstitialAd.Call("setListener", new InterstitialAdListener());
-            interstitialAd.Call("loadAd");
+            appOpenAd.Call("setListener", new AppOpenAdListener());
+            appOpenAd.Call("loadAd");
             
             currentAdUnitId = adUnitId;
         }
@@ -97,8 +97,19 @@ public class WortiseInterstitial : MonoBehaviour
     public static bool ShowAd()
     {
         #if UNITY_ANDROID
-        if (interstitialAd != null) {
-            interstitialAd.Call<bool>("showAd");
+        if (appOpenAd != null) {
+            appOpenAd.Call<bool>("showAd", activity);
+        }
+        #endif
+        
+        return false;
+    }
+
+    public static bool TryToShowAd()
+    {
+        #if UNITY_ANDROID
+        if (appOpenAd != null) {
+            appOpenAd.Call<bool>("tryToShowAd", activity);
         }
         #endif
         
@@ -107,33 +118,33 @@ public class WortiseInterstitial : MonoBehaviour
     
     
     #if UNITY_ANDROID
-    class InterstitialAdListener : AndroidJavaProxy
+    class AppOpenAdListener : AndroidJavaProxy
     {
-        public InterstitialAdListener() : base("com.wortise.ads.interstitial.InterstitialAd$Listener")
+        public AppOpenAdListener() : base("com.wortise.ads.appopen.AppOpenAd$Listener")
         {
         }
         
-        public void onInterstitialClicked(AndroidJavaObject ad)
+        public void onAppOpenClicked(AndroidJavaObject ad)
         {
             OnClicked();
         }
 
-        public void onInterstitialDismissed(AndroidJavaObject ad)
+        public void onAppOpenDismissed(AndroidJavaObject ad)
         {
             OnDismissed();
         }
 
-        public void onInterstitialFailed(AndroidJavaObject ad, AndroidJavaObject error)
+        public void onAppOpenFailed(AndroidJavaObject ad, AndroidJavaObject error)
         {
             OnFailed();
         }
 
-        public void onInterstitialLoaded(AndroidJavaObject ad)
+        public void onAppOpenLoaded(AndroidJavaObject ad)
         {
             OnLoaded();
         }
 
-        public void onInterstitialShown(AndroidJavaObject ad)
+        public void onAppOpenShown(AndroidJavaObject ad)
         {
             OnShown();
         }

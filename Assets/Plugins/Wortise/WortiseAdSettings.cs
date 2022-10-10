@@ -95,6 +95,29 @@ public class WortiseAdSettings : MonoBehaviour
         }
     }
 
+    public static string UserId
+    {
+        get
+        {
+            #if UNITY_ANDROID
+            if (activity != null) {
+                return adSettings.CallStatic<string>("getUserId", activity);
+            }
+            #endif
+
+            return null;
+        }
+
+        set
+        {
+            #if UNITY_ANDROID
+            if (activity != null) {
+                adSettings.CallStatic("setUserId", activity, value);
+            }
+            #endif
+        }
+    }
+
 
     static WortiseAdSettings()
     {

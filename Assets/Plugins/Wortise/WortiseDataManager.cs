@@ -140,20 +140,4 @@ public class WortiseDataManager : MonoBehaviour
         }
         #endif
     }
-
-    public static bool RequestAccount()
-    {
-        return RequestAccount(true);
-    }
-
-    public static bool RequestAccount(bool onlyIfNotAvailable)
-    {
-        #if UNITY_ANDROID
-        if (activity != null) {
-            return dataManager.CallStatic<bool>("requestAccount", activity, onlyIfNotAvailable);
-        }
-        #endif
-
-        return false;
-    }
 }
