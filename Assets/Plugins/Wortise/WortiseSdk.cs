@@ -101,7 +101,10 @@ public class WortiseSdk
         
         public AndroidJavaObject invoke()
         {
-            OnInitialized();
+            if (OnInitialized != null) {
+                OnInitialized();
+            }
+
             return null;
         }
     }

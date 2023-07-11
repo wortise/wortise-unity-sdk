@@ -185,27 +185,37 @@ public class WortiseAppOpen
         
         public void onAppOpenClicked(AndroidJavaObject ad)
         {
-            appOpenAd.OnClicked();
+            if (appOpenAd.OnClicked != null) {
+                appOpenAd.OnClicked();
+            }
         }
 
         public void onAppOpenDismissed(AndroidJavaObject ad)
         {
-            appOpenAd.OnDismissed();
+            if (appOpenAd.OnDismissed != null) {
+                appOpenAd.OnDismissed();
+            }
         }
 
         public void onAppOpenFailed(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            appOpenAd.OnFailed();
+            if (appOpenAd.OnFailed != null) {
+                appOpenAd.OnFailed();
+            }
         }
 
         public void onAppOpenLoaded(AndroidJavaObject ad)
         {
-            appOpenAd.OnLoaded();
+            if (appOpenAd.OnLoaded != null) {
+                appOpenAd.OnLoaded();
+            }
         }
 
         public void onAppOpenShown(AndroidJavaObject ad)
         {
-            appOpenAd.OnShown();
+            if (appOpenAd.OnShown != null) {
+                appOpenAd.OnShown();
+            }
         }
     }
     #endif

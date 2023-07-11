@@ -104,12 +104,14 @@ public class WortiseRewarded
         
         public void onRewardedClicked(AndroidJavaObject ad)
         {
-            rewardedAd.OnClicked();
+            if (rewardedAd.OnClicked != null) {
+                rewardedAd.OnClicked();
+            }
         }
 
         public void onRewardedCompleted(AndroidJavaObject ad, AndroidJavaObject reward)
         {
-            if (reward == null) {
+            if (reward == null || rewardedAd.OnCompleted == null) {
                 return;
             }
 
@@ -124,22 +126,30 @@ public class WortiseRewarded
 
         public void onRewardedDismissed(AndroidJavaObject ad)
         {
-            rewardedAd.OnDismissed();
+            if (rewardedAd.OnDismissed != null) {
+                rewardedAd.OnDismissed();
+            }
         }
 
         public void onRewardedFailed(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            rewardedAd.OnFailed();
+            if (rewardedAd.OnFailed != null) {
+                rewardedAd.OnFailed();
+            }
         }
 
         public void onRewardedLoaded(AndroidJavaObject ad)
         {
-            rewardedAd.OnLoaded();
+            if (rewardedAd.OnLoaded != null) {
+                rewardedAd.OnLoaded();
+            }
         }
 
         public void onRewardedShown(AndroidJavaObject ad)
         {
-            rewardedAd.OnShown();
+            if (rewardedAd.OnShown != null) {
+                rewardedAd.OnShown();
+            }
         }
     }
     #endif

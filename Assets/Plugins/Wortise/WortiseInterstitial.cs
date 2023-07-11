@@ -103,27 +103,37 @@ public class WortiseInterstitial
         
         public void onInterstitialClicked(AndroidJavaObject ad)
         {
-            interstitialAd.OnClicked();
+            if (interstitialAd.OnClicked != null) {
+                interstitialAd.OnClicked();
+            }
         }
 
         public void onInterstitialDismissed(AndroidJavaObject ad)
         {
-            interstitialAd.OnDismissed();
+            if (interstitialAd.OnDismissed != null) {
+                interstitialAd.OnDismissed();
+            }
         }
 
         public void onInterstitialFailed(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            interstitialAd.OnFailed();
+            if (interstitialAd.OnFailed != null) {
+                interstitialAd.OnFailed();
+            }
         }
 
         public void onInterstitialLoaded(AndroidJavaObject ad)
         {
-            interstitialAd.OnLoaded();
+            if (interstitialAd.OnLoaded != null) {
+                interstitialAd.OnLoaded();
+            }
         }
 
         public void onInterstitialShown(AndroidJavaObject ad)
         {
-            interstitialAd.OnShown();
+            if (interstitialAd.OnShown != null) {
+                interstitialAd.OnShown();
+            }
         }
     }
     #endif
