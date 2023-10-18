@@ -64,29 +64,11 @@ public class WortiseSdk
         #endif
     }
 
-    public static void Initialize(string assetKey, bool start = true)
+    public static void Initialize(string assetKey)
     {
         #if UNITY_ANDROID
         if (activity != null) {
-            wortiseSdk.CallStatic("initialize", activity, assetKey, start, new SdkInitializationListener());
-        }
-        #endif
-    }
-    
-    public static void Start()
-    {
-        #if UNITY_ANDROID
-        if (activity != null) {
-            wortiseSdk.CallStatic("start", activity);
-        }
-        #endif
-    }
-
-    public static void Stop()
-    {
-        #if UNITY_ANDROID
-        if (activity != null) {
-            wortiseSdk.CallStatic("stop", activity);
+            wortiseSdk.CallStatic("initialize", activity, assetKey, new SdkInitializationListener());
         }
         #endif
     }

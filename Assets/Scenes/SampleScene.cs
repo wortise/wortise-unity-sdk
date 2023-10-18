@@ -29,14 +29,16 @@ public class SampleScene : MonoBehaviour
 
         interstitialAd = new WortiseInterstitial("test-interstitial");
 
-        interstitialAd.OnFailed += () => Enqueue(OnInterstitialFailed());
-        interstitialAd.OnLoaded += () => Enqueue(OnInterstitialLoaded());
+        interstitialAd.OnFailedToLoad += () => Enqueue(OnInterstitialFailedToLoad());
+        interstitialAd.OnFailedToShow += () => Enqueue(OnInterstitialFailedToShow());
+        interstitialAd.OnLoaded       += () => Enqueue(OnInterstitialLoaded());
 
         rewardedAd = new WortiseRewarded("test-rewarded");
 
-        rewardedAd.OnCompleted += (reward) => Enqueue(OnRewardedCompleted(reward));
-        rewardedAd.OnFailed    += () => Enqueue(OnRewardedFailed());
-        rewardedAd.OnLoaded    += () => Enqueue(OnRewardedLoaded());
+        rewardedAd.OnCompleted    += (reward) => Enqueue(OnRewardedCompleted(reward));
+        rewardedAd.OnFailedToLoad += () => Enqueue(OnRewardedFailedToLoad());
+        rewardedAd.OnFailedToShow += () => Enqueue(OnRewardedFailedToShow());
+        rewardedAd.OnLoaded       += () => Enqueue(OnRewardedLoaded());
     }
 
     void Update()
@@ -48,13 +50,22 @@ public class SampleScene : MonoBehaviour
         }
     }
     
-    private IEnumerator OnInterstitialFailed()
+    private IEnumerator OnInterstitialFailedToLoad()
     {
-        Debug.Log("Interstitial failed");
+        Debug.Log("Interstitial failed to load");
 
         EnableButton(buttonShowInterstitial, false);
 
-        textStatus.text = "Interstitial failed";
+        textStatus.text = "Interstitial load failed";
+        
+        yield return null;
+    }
+
+    private IEnumerator OnInterstitialFailedToShow()
+    {
+        Debug.Log("Interstitial failed to show");
+
+        textStatus.text = "Interstitial show failed";
         
         yield return null;
     }
@@ -83,13 +94,22 @@ public class SampleScene : MonoBehaviour
         yield return null;
     }
 
-    private IEnumerator OnRewardedFailed()
+    private IEnumerator OnRewardedFailedToLoad()
     {
-        Debug.Log("Rewarded failed");
+        Debug.Log("Rewarded failed to load");
 
         EnableButton(buttonShowRewarded, false);
 
-        textStatus.text = "Rewarded failed";
+        textStatus.text = "Rewarded load failed";
+        
+        yield return null;
+    }
+
+    private IEnumerator OnRewardedFailedToShow()
+    {
+        Debug.Log("Rewarded failed to show");
+
+        textStatus.text = "Rewarded show failed";
         
         yield return null;
     }
@@ -111,7 +131,7 @@ public class SampleScene : MonoBehaviour
 
         textStatus.text = "SDK initialized";
 
-        WortiseConsentManager.RequestOnce();
+        WortiseConsentManager.RequestIfRequired();
 
         yield return null;
     }

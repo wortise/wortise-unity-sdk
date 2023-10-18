@@ -56,7 +56,9 @@ public class WortiseRewarded
     public event Action OnClicked;
     public event Action<WortiseReward> OnCompleted;
     public event Action OnDismissed;
-    public event Action OnFailed;
+    public event Action OnFailedToLoad;
+    public event Action OnFailedToShow;
+    public event Action OnImpression;
     public event Action OnLoaded;
     public event Action OnShown;
 
@@ -81,12 +83,12 @@ public class WortiseRewarded
         #endif
     }
     
-    public bool ShowAd()
+    public void ShowAd()
     {
         #if UNITY_ANDROID
-        return rewardedAd.Call<bool>("showAd");
-        #else
-        return false;
+        if (activity != null) {
+            rewardedAd.Call("showAd", activity);
+        }
         #endif
     }
     
@@ -131,10 +133,24 @@ public class WortiseRewarded
             }
         }
 
-        public void onRewardedFailed(AndroidJavaObject ad, AndroidJavaObject error)
+        public void onRewardedFailedToLoad(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            if (rewardedAd.OnFailed != null) {
-                rewardedAd.OnFailed();
+            if (rewardedAd.OnFailedToLoad != null) {
+                rewardedAd.OnFailedToLoad();
+            }
+        }
+
+        public void onRewardedFailedToShow(AndroidJavaObject ad, AndroidJavaObject error)
+        {
+            if (rewardedAd.OnFailedToShow != null) {
+                rewardedAd.OnFailedToShow();
+            }
+        }
+
+        public void onRewardedImpression(AndroidJavaObject ad)
+        {
+            if (rewardedAd.OnImpression != null) {
+                rewardedAd.OnImpression();
             }
         }
 

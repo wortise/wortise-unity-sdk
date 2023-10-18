@@ -55,7 +55,9 @@ public class WortiseInterstitial
     
     public event Action OnClicked;
     public event Action OnDismissed;
-    public event Action OnFailed;
+    public event Action OnFailedToLoad;
+    public event Action OnFailedToShow;
+    public event Action OnImpression;
     public event Action OnLoaded;
     public event Action OnShown;
 
@@ -80,12 +82,12 @@ public class WortiseInterstitial
         #endif
     }
     
-    public bool ShowAd()
+    public void ShowAd()
     {
         #if UNITY_ANDROID
-        return interstitialAd.Call<bool>("showAd");
-        #else
-        return false;
+        if (activity != null) {
+            interstitialAd.Call("showAd", activity);
+        }
         #endif
     }
     
@@ -115,10 +117,24 @@ public class WortiseInterstitial
             }
         }
 
-        public void onInterstitialFailed(AndroidJavaObject ad, AndroidJavaObject error)
+        public void onInterstitialFailedToLoad(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            if (interstitialAd.OnFailed != null) {
-                interstitialAd.OnFailed();
+            if (interstitialAd.OnFailedToLoad != null) {
+                interstitialAd.OnFailedToLoad();
+            }
+        }
+
+        public void onInterstitialFailedToShow(AndroidJavaObject ad, AndroidJavaObject error)
+        {
+            if (interstitialAd.OnFailedToShow != null) {
+                interstitialAd.OnFailedToShow();
+            }
+        }
+
+        public void onInterstitialImpression(AndroidJavaObject ad)
+        {
+            if (interstitialAd.OnImpression != null) {
+                interstitialAd.OnImpression();
             }
         }
 

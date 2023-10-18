@@ -13,7 +13,6 @@ public class WortiseConsentManager
         }
     }
     
-    private static AndroidJavaClass consentActivity;
     private static AndroidJavaObject consentManager;
     #endif
     
@@ -31,43 +30,17 @@ public class WortiseConsentManager
         }
     }
 
-    public static bool IsGranted
+    public static bool Exists
     {
         get
         {
             #if UNITY_ANDROID
             if (activity != null) {
-                return consentManager.CallStatic<bool>("isGranted", activity);
+                return consentManager.CallStatic<bool>("exists", activity);
             }
             #endif
             
             return false;
-        }
-    }
-
-    public static bool IsReplied
-    {
-        get
-        {
-            #if UNITY_ANDROID
-            if (activity != null) {
-                return consentManager.CallStatic<bool>("isReplied", activity);
-            }
-            #endif
-            
-            return false;
-        }
-    }
-    
-    public static bool IsRequired
-    {
-        get
-        {
-            #if UNITY_ANDROID
-            return consentManager.CallStatic<bool>("isRequired");
-            #else
-            return false;
-            #endif
         }
     }
     
@@ -75,47 +48,24 @@ public class WortiseConsentManager
     static WortiseConsentManager()
     {
         #if UNITY_ANDROID
-        consentActivity = new AndroidJavaClass("com.wortise.ads.consent.ConsentActivity");
-        consentManager  = new AndroidJavaClass("com.wortise.ads.consent.ConsentManager");
+        consentManager = new AndroidJavaClass("com.wortise.ads.consent.ConsentManager");
         #endif
     }
     
-    public static bool Request(bool withOptOut = false)
+    public static void Request()
     {
         #if UNITY_ANDROID
         if (activity != null) {
-            return consentActivity.CallStatic<bool>("request", activity, withOptOut);
+            consentManager.CallStatic("request", activity);
         }
         #endif
-
-        return false;
     }
     
-    public static bool RequestOnce(bool withOptOut = false)
+    public static void RequestIfRequired()
     {
         #if UNITY_ANDROID
         if (activity != null) {
-            return consentActivity.CallStatic<bool>("requestOnce", activity, withOptOut);
-        }
-        #endif
-
-        return false;
-    }
-
-    public static void Set(bool granted)
-    {
-        #if UNITY_ANDROID
-        if (activity != null) {
-            consentManager.CallStatic("set", activity, granted);
-        }
-        #endif
-    }
-
-    public static void SetIabString(string value)
-    {
-        #if UNITY_ANDROID
-        if (activity != null) {
-            consentManager.CallStatic("setIabString", activity, value);
+            consentManager.CallStatic("requestIfRequired", activity);
         }
         #endif
     }

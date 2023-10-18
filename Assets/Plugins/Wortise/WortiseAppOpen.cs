@@ -20,8 +20,6 @@ public class WortiseAppOpen
             return WortiseSdk.activity;
         }
     }
-    
-    private static AndroidJavaClass appOpenOrientation;
 
     private AndroidJavaObject appOpenAd;
     #endif
@@ -81,58 +79,15 @@ public class WortiseAppOpen
         }
     }
 
-    public AdOrientation? Orientation
-    {
-        get
-        {
-            #if UNITY_ANDROID
-            AndroidJavaObject obj = appOpenAd.Call<AndroidJavaObject>("getOrientation");
-
-            if (obj == null) {
-                return null;
-            }
-
-            string name = obj.Call<string>("name");
-
-            AdOrientation orientation;
-
-            Enum.TryParse(name, true, out orientation);
-
-            return orientation;
-            #else
-            return null;
-            #endif
-        }
-
-        set
-        {
-            #if UNITY_ANDROID
-            if (value == null) {
-                return;
-            }
-
-            string name = value.ToString();
-
-            AndroidJavaObject obj = appOpenOrientation.CallStatic<AndroidJavaObject>("valueOf", name.ToUpper());
-
-            appOpenAd.Call("setOrientation", obj);
-            #endif
-        }
-    }
 
     public event Action OnClicked;
     public event Action OnDismissed;
-    public event Action OnFailed;
+    public event Action OnFailedToLoad;
+    public event Action onFailedToShow;
+    public event Action OnImpression;
     public event Action OnLoaded;
     public event Action OnShown;
 
-
-    static WortiseAppOpen()
-    {
-        #if UNITY_ANDROID
-        appOpenOrientation = new AndroidJavaClass("com.wortise.ads.appopen.AppOpenAd$Orientation");
-        #endif
-    }
 
     public WortiseAppOpen(string adUnitId) {
         appOpenAd = new AndroidJavaObject("com.wortise.ads.appopen.AppOpenAd", activity, adUnitId);
@@ -153,21 +108,19 @@ public class WortiseAppOpen
         #endif
     }
     
-    public bool ShowAd()
+    public void ShowAd()
     {
         #if UNITY_ANDROID
-        return appOpenAd.Call<bool>("showAd", activity);
-        #else
-        return false;
+        if (activity != null) {
+            appOpenAd.Call("showAd", activity);
+        }
         #endif
     }
 
-    public bool TryToShowAd()
+    public void TryToShowAd()
     {
         #if UNITY_ANDROID
-        return appOpenAd.Call<bool>("tryToShowAd", activity);
-        #else
-        return false;
+        appOpenAd.Call("tryToShowAd", activity);
         #endif
     }
     
@@ -197,10 +150,24 @@ public class WortiseAppOpen
             }
         }
 
-        public void onAppOpenFailed(AndroidJavaObject ad, AndroidJavaObject error)
+        public void onAppOpenFailedToLoad(AndroidJavaObject ad, AndroidJavaObject error)
         {
-            if (appOpenAd.OnFailed != null) {
-                appOpenAd.OnFailed();
+            if (appOpenAd.OnFailedToLoad != null) {
+                appOpenAd.OnFailedToLoad();
+            }
+        }
+
+        public void onAppOpenFailedToShow(AndroidJavaObject ad, AndroidJavaObject error)
+        {
+            if (appOpenAd.onFailedToShow != null) {
+                appOpenAd.onFailedToShow();
+            }
+        }
+
+        public void onAppOpenImpression(AndroidJavaObject ad)
+        {
+            if (appOpenAd.OnImpression != null) {
+                appOpenAd.OnImpression();
             }
         }
 

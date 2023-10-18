@@ -26,5 +26,8 @@
                 android:name="unityplayer.UnityActivity"
                 android:value="true" />
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4537341636281998~2002903969" />
     </application>
 </manifest>

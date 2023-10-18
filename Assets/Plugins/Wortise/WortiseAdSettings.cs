@@ -56,6 +56,25 @@ public class WortiseAdSettings
         }
     }
 
+    public static bool IsTestEnabled
+    {
+        get
+        {
+            #if UNITY_ANDROID
+            return adSettings.CallStatic<bool>("isTestEnabled");
+            #else
+            return false;
+            #endif
+        }
+
+        set
+        {
+            #if UNITY_ANDROID
+            adSettings.CallStatic("setTestEnabled", value);
+            #endif
+        }
+    }
+
     public static WortiseAdContentRating? MaxAdContentRating
     {
         get
