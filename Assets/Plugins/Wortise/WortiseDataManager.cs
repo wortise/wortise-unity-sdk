@@ -41,7 +41,13 @@ public class WortiseDataManager
         {
             #if UNITY_ANDROID
             if (activity != null) {
-                dataManager.CallStatic("setAge", activity, value);
+                AndroidJavaObject obj = null;
+
+                if (value != null) {
+                    obj = new AndroidJavaObject("java.lang.Integer", value);
+                }
+
+                dataManager.CallStatic("setAge", activity, obj);
             }
             #endif
         }
